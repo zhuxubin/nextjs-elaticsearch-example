@@ -14,9 +14,11 @@ npm run dev
 进行测试
 - 在浏览器打开[http://localhost:3000](http://localhost:3000) 就能看到页面信息
 - 搜索提示
+
 ![搜索提示](/doc/WX20231022-155852.png)
 
 - 搜索结果列表，并且关键字高亮
+
 ![搜索提示](/doc/WX20231022-160000.png)
 
 ## Learn More
