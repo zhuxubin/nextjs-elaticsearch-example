@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: es-elasticsearch7.17.7
+    environment:
+      - bootstrap.memory_lock=true # 内存交换的选项，官网建议为true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 设置内存，如内存不足，可以尝试调低点
+      - discovery.type=single-node # 是否启用单节点模式
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+    ulimits:
+      # 栈内存的上限
+      memlock:
+        soft: -1 # 不限制
+        hard: -1 # 不限制
+    volumes:
+      #  - ~/top/data/elasticsearch/config:/usr/share/elasticsearch/config
+      # - ./plugins:/usr/share/elasticsearch/plugins #插件文件挂载
+      - ./data:/usr/share/elasticsearch/data #数据文件挂载
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    hostname: elasticsearch
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
+
+  kibana:
+    image: kibana:7.17.7
+    container_name: es-kibana7.17.7
+    environment:
+      - elasticsearch.hosts=http://elasticsearch:9200
+    hostname: kibana
+    depends_on:
+      - elasticsearch
+    restart: always
+    ports:
+      - 5601:5601
+    networks:
+      - elastic
+
+volumes:
+  esdata:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
